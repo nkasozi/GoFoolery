@@ -42,7 +42,9 @@ func Test_main(t *testing.T) {
 		return
 	}
 
+	response := string(p)
+
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.NotEmpty(t, p)
+	assert.Equal(t, response, "SUCCESS")
 	return
 }
