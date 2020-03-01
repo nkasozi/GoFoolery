@@ -58,14 +58,24 @@ func saveUserToDatabase(c *gin.Context) {
 }
 
 func main() {
+	router, err := setupRouter()
 
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	router.Run(":8999")
+}
+
+func setupRouter() (*gin.Engine, error) {
+	router := gin.Default()
 	connectionString := "host=localhost port=5432 user=postgres dbname=TestGoDB password=Tp4tci2s4u2g! sslmode=disable"
 	db, err = gorm.Open("postgres", connectionString)
 
 	//cant reach the db
 	if err != nil {
-		fmt.Println(err)
-		return
+		return router, err
 	}
 
 	//not matter what happens
@@ -77,12 +87,9 @@ func main() {
 	// Enable Logger, show detailed log
 	db.LogMode(true)
 
-	router := gin.Default()
-
 	// This handler will match /user/john but will not match /user/ or /user
 	router.GET("/user/:userId", getUserFromDatabase)
 
 	router.POST("/user", saveUserToDatabase)
-
-	router.Run(":8999")
+	return router, err
 }
